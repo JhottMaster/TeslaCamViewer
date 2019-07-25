@@ -388,5 +388,20 @@ namespace TeslaCamViewer
             this.right.SpeedRatio = model.CalculatedPlaybackSpeed;
             this.front.SpeedRatio = model.CalculatedPlaybackSpeed;
         }
+
+        private void DeleteFolder_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult result = MessageBox.Show("Delete folder?", "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            if (result == MessageBoxResult.Yes) {
+                string folderPath = (string)((ContextMenu)((MenuItem)sender)?.Parent)?.Tag;
+                if (!string.IsNullOrEmpty(folderPath) && Directory.Exists(folderPath)) {
+                    File.Delete(folderPath);
+                    if (Directory.Exists(folderPath)) MessageBox.Show("Could not delete folder!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else {
+                    MessageBox.Show("Folder could not be found", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+        }
     }
 }

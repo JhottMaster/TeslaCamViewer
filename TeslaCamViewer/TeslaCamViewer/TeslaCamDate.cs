@@ -11,15 +11,16 @@ namespace TeslaCamViewer
     {
         private const string FileFormatNoSeconds = "yyyy-MM-dd_HH-mm";
         private const string FileFormatWithSeconds = "yyyy-MM-dd_HH-mm-ss";
-        private const string DisplayFormat = "M/d/yyyy h:mm tt";
+        private const string DisplayFormatNoSeconds = "M/d/yyyy h:mm tt";
+        private const string DisplayFormatWithSeconds = "M/d/yyyy h:mm:ss tt";
 
         public string UTCDateString { get; private set; }
         public string DisplayValue
         {
             get
             {
-
-                return LocalTimeStamp.ToString(DisplayFormat);
+                if (UTCTimeStamp.Second == 0) return LocalTimeStamp.ToString(DisplayFormatNoSeconds);
+                return LocalTimeStamp.ToString(DisplayFormatWithSeconds);
             }
         }
         public DateTime UTCTimeStamp

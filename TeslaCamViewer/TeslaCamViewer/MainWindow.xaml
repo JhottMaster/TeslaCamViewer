@@ -64,7 +64,12 @@
         DataType="{x:Type local:TeslaCamEventCollection}"
         ItemsSource="{Binding Recordings}">
                             <StackPanel Orientation="Horizontal" Margin="2">
-                                <TextBlock Text="{Binding StartDate.DisplayValue}" />
+                                <TextBlock Text="{Binding DisplayTitle}" />
+                                <StackPanel.ContextMenu>
+                                    <ContextMenu Tag="{Binding FolderPath}">
+                                        <MenuItem Header="Delete Folder" Click="DeleteFolder_Click"></MenuItem>
+                                    </ContextMenu>
+                                </StackPanel.ContextMenu>
                             </StackPanel>
                         </HierarchicalDataTemplate>
                         <HierarchicalDataTemplate

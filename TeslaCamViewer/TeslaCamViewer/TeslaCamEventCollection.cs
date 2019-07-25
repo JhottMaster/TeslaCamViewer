@@ -13,6 +13,9 @@ namespace TeslaCamViewer
     /// </summary>
     public class TeslaCamEventCollection
     {
+        public string FolderName { get { return System.IO.Path.GetFileName(FolderPath); } }
+        public string FolderPath { get; private set; }
+        public string DisplayTitle { get { return $"{this.FolderName}\t({StartDate.DisplayValue})"; } }
         public TeslaCamDate StartDate { get; private set; }
         public TeslaCamDate EndDate { get; private set; }
         public List<TeslaCamFileSet> Recordings { get; set; }
@@ -31,6 +34,8 @@ namespace TeslaCamViewer
 
         public bool BuildFromDirectory(string Directory)
         {
+            this.FolderPath = Directory;
+
             // Get list of raw files
             string[] Files = System.IO.Directory.GetFiles(Directory, "*.mp4").OrderBy(x=>x).ToArray();
 
@@ -54,6 +59,7 @@ namespace TeslaCamViewer
             foreach (var CurrentEvent in DistinctEvents)
             {
                 List<TeslaCamFile> MatchedFiles = CurrentTeslaCams.Where(e => e.Date.UTCDateString == CurrentEvent).ToList();
+
                 TeslaCamFileSet CurrentFileSet = new TeslaCamFileSet();
 
                 CurrentFileSet.SetCollection(MatchedFiles);
