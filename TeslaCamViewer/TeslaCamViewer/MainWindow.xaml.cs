@@ -61,6 +61,16 @@ namespace TeslaCamViewer
             if (playFront) front.Play();
             this.tabs.SelectedIndex = 1;
         }
+
+        public void StopPlayingFile()
+        {
+            left.Stop();
+            right.Stop();
+            front.Stop();
+            this.front.Source = null;
+            this.left.Source = null;
+            this.right.Source = null;
+        }
     }
 
     /// <summary>
@@ -191,6 +201,7 @@ namespace TeslaCamViewer
                     drives = drives.Where(e => e.DriveType == DriveType.Removable ||
                         e.DriveType == DriveType.Network ||
                         e.DriveType == DriveType.Fixed).ToArray();
+
 
                     // Find the first drive containing a TeslaCam folder and select that folder
                     teslaCamDir = (from drive in drives
@@ -376,6 +387,7 @@ namespace TeslaCamViewer
             foreach (object i in ic.Items)
             {
                 TreeViewItem tvi2 = ic.ItemContainerGenerator.ContainerFromItem(i) as TreeViewItem;
+                if (tvi2 == null) continue;
                 tvi = FindTviFromObjectRecursive(tvi2, o);
                 if (tvi != null) return tvi;
             }
@@ -391,17 +403,21 @@ namespace TeslaCamViewer
 
         private void DeleteFolder_Click(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("Delete folder?", "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-            if (result == MessageBoxResult.Yes) {
-                string folderPath = (string)((ContextMenu)((MenuItem)sender)?.Parent)?.Tag;
-                if (!string.IsNullOrEmpty(folderPath) && Directory.Exists(folderPath)) {
-                    File.Delete(folderPath);
-                    if (Directory.Exists(folderPath)) MessageBox.Show("Could not delete folder!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            string folderPath = (string)((ContextMenu)((MenuItem)sender)?.Parent)?.Tag;
+            if (!string.IsNullOrEmpty(folderPath) && Directory.Exists(folderPath))
+            {
+                var files = Directory.GetFiles(folderPath);
+                MessageBoxResult result = MessageBox.Show($"Delete folder '{folderPath}' and contents?\n\nThis folder contains {files.Length} files.", "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.Yes)
+                {
+                    model.StopPlayingFile();
+                    foreach (var file in Directory.EnumerateFiles(folderPath)) { File.Delete(file); }
+                    Directory.Delete(folderPath);
+                    return;
                 }
-                else {
-                    MessageBox.Show("Folder could not be found", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
+                else { return; }
             }
+            MessageBox.Show("Folder could not be found", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 }

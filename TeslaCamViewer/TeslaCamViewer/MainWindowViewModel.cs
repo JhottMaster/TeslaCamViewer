@@ -248,5 +248,11 @@ namespace TeslaCamViewer
             this.VideoModel.LoadFileSet(set);
             this.CurrentPlaybackFile = set;
         }
+
+        public void StopPlayingFile()
+        {
+            this.VideoModel.StopPlayingFile();
+            this.CurrentPlaybackFile = null;
+        }
     }
 }

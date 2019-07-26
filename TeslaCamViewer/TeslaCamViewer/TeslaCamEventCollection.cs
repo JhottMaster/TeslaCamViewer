@@ -15,7 +15,7 @@ namespace TeslaCamViewer
     {
         public string FolderName { get { return System.IO.Path.GetFileName(FolderPath); } }
         public string FolderPath { get; private set; }
-        public string DisplayTitle { get { return $"{this.FolderName}\t({StartDate.DisplayValue})"; } }
+        public string DisplayTitle { get { return $"{this.FolderName}\t[{this.Recordings.Count}]\t({StartDate.DisplayValue})"; } }
         public TeslaCamDate StartDate { get; private set; }
         public TeslaCamDate EndDate { get; private set; }
         public List<TeslaCamFileSet> Recordings { get; set; }
